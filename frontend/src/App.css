@@ -1,0 +1,45 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.video-container {
+  border: 2px solid #61dafb;
+  border-radius: 8px;
+  background-color: #000;
+  width: 640px;
+  height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.placeholder {
+  color: #aaa;
+}
+
+.status {
+  margin-top: 10px;
+}
+
+.connected {
+  color: #00ff00; /* Green */
+  font-weight: bold;
+}
+
+.disconnected {
+  color: #ff4d4d; /* Red */
+  font-weight: bold;
+}
