@@ -23,7 +23,7 @@ This system combines a powerful **FastAPI backend** with a modern **React fronte
 ### **Backend Stack**
 - **Framework**: FastAPI 0.104+ with Python 3.8+
 - **Database**: PostgreSQL 13+
-- **Authentication**: JWT tokens with role-based access
+- **Authentication**: JWT tokens with httpOnly cookies and role-based access
 - **Face Recognition**: InsightFace with GPU acceleration
 - **Video Processing**: OpenCV with multi-threading
 - **WebSocket**: Real-time video streaming
@@ -197,7 +197,7 @@ DELETE /superadmin/cameras/{id}      # Delete camera
 ### **WebSocket Streaming**
 ```javascript
 // Connect to live video feed
-const ws = new WebSocket('ws://localhost:8000/ws/video_feed/1?token=YOUR_JWT_TOKEN');
+const ws = new WebSocket('ws://localhost:8000/ws/video_feed/1'); // Cookies sent automatically
 
 ws.onmessage = (event) => {
   const frameData = event.data; // Base64 encoded image
@@ -420,7 +420,7 @@ curl http://localhost:8000/
 ```bash
 # WebSocket connection fails
 # ✅ Check camera permissions and URLs
-# ✅ Verify JWT token is valid
+# ✅ Verify authentication via httpOnly cookies
 # ✅ Ensure user has admin/super_admin role
 ```
 

@@ -1,8 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { canAccessAdminFeatures, canAccessSuperAdminFeatures } from '../../utils/auth';
+import { canAccessAdminFeatures, canAccessSuperAdminFeatures, getUserRole } from '../../utils/auth';
 
 const Navigation = () => {
+  const userRole = getUserRole();
   const isAdmin = canAccessAdminFeatures();
   const isSuperAdmin = canAccessSuperAdminFeatures();
 
@@ -92,11 +93,14 @@ const Navigation = () => {
   ];
 
   const getAccessibleItems = () => {
+    // FIXED: Proper role-based access control
+    if (!userRole) {
+      return []; // No access if no role
+    }
+
     return navItems.filter(item => {
-      if (item.roles.includes('employee')) return true;
-      if (item.roles.includes('admin') && isAdmin) return true;
-      if (item.roles.includes('super_admin') && isSuperAdmin) return true;
-      return false;
+      // Check if the user's role is explicitly allowed for this item
+      return item.roles.includes(userRole);
     });
   };
 

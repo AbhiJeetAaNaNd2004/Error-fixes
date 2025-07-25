@@ -24,6 +24,7 @@ class UserResponse(BaseModel):
     username: str
     role_name: str
     department_name: str
+    department_id: int  # NEW: Added department_id for enhanced user management
     is_active: bool
     face_count: int # New field
 

@@ -11,6 +11,7 @@ import SystemControl from './pages/SystemControl';
 import LiveFeed from './pages/LiveFeed';
 import { isAuthenticated } from './utils/auth';
 import DepartmentManagement from './pages/DepartmentManagement';
+import NotificationContainer from './components/Layout/NotificationContainer';
 
 function App() {
   return (
@@ -71,14 +72,6 @@ function App() {
 
           {/* Super Admin Only Routes */}
           <Route 
-            path="/cameras" 
-            element={
-              <ProtectedRoute requiredRole="super_admin">
-                <CameraManagement />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
             path="/system" 
             element={
               <ProtectedRoute requiredRole="super_admin">
@@ -111,6 +104,9 @@ function App() {
             } 
           />
         </Routes>
+        
+        {/* Global notification system */}
+        <NotificationContainer />
       </div>
     </Router>
   );
