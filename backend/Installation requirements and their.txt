@@ -1,0 +1,23 @@
+Installation requirements and their version:
+Microsoft C++ Build Tools:
+C++ build tools
+Windows 11 SDK
+MSVC v143 - VS 2022 C++ x64/x86 build tools
+C++/CLI support
+CUDA Toolkit - version 11.5 — best supported version for ONNX Runtime GPU 1.12.1
+cuDNN 8.3.3 for CUDA 11.5
+ONNX Runtime	1.15.1 GPU	Built for CUDA 11.5
+nvcc --version (to check CUDA version)
+potential use of pip install onnxruntime-gpu==1.12.1
+also downgrade numpy using pip install numpy==1.24.4
+downgrade FAISS to pip install faiss-cpu==1.7.4 to work with numpy 1.24.4
+also download zlib 1.2.13
+Python 3.10
+Name: insightface Version: 0.7.3
+requires atleast 24 gb fo memory for embeddings alone
+
+Component     requirements
+CPU           1–2 cores per camera feed + overhead = 32–64 logical cores 
+RAM           Video buffer + embeddings + app + OS overhead = 128–256 GB 
+GPU VRAM      Model + intermediate tensors per feed = 6–8 GB per GPU     
+Storage       For logging and expansion = 2 TB NVMe                      

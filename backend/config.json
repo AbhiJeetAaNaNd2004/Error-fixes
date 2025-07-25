@@ -1,0 +1,68 @@
+{
+    "api": {
+        "base_url": "https://people.zoho.in/people/api",
+        "attendance_endpoint": "/attendance",
+        "token_url": "https://accounts.zoho.in/oauth/v2/token",
+        "access_token": "1000.08582e3b1bc8d605c308f55fbba7a91b.9f263cd0d6b3089f422baafd15edf693",
+        "refresh_token": "1000.2ccc8b029434d7f248b3b653c2e23e81.3772752c9f190137ef70db291d0a6c46",
+        "client_id": "1000.K9X96PSA5YII5NNRIWKUNWANDFFCKL",
+        "client_secret": "4750df6f1d6c575fe5b9c433b2b73147b5481dc167",
+        "timeout": 10,
+        "max_retries": 3
+    },
+    "paths": {
+        "known_faces_dir": "D:\\Python Course\\SEDL AI\\insightface-env\\known_faces",
+        "attendance_log": "attendance_log.csv"
+    },
+    "tuning": {
+        "recognition_threshold": 0.6,
+        "detection_threshold": 0.5,
+        "match_threshold": 0.8,
+        "face_quality_threshold": 0.65,
+        "embedding_update_cooldown": 10,
+        "max_updates_before_rebuild": 20
+    },
+    "system": {
+        "auto_detect_cameras": true,
+        "default_gpu_id": 0,
+        "default_fps": 15
+    },
+    "cameras": [
+        {
+            "camera_id": 0,
+            "gpu_id": 0,
+            "camera_type": "entry",
+            "resolution": [
+                640,
+                480
+            ],
+            "fps": 15,
+            "tripwires": [
+                {
+                    "name": "AutoTripwire_0",
+                    "direction": "horizontal",
+                    "position": 0.5,
+                    "spacing": 0.01
+                }
+            ]
+        },
+        {
+            "camera_id": 1,
+            "gpu_id": 0,
+            "camera_type": "exit",
+            "resolution": [
+                640,
+                480
+            ],
+            "fps": 15,
+            "tripwires": [
+                {
+                    "name": "AutoTripwire_1",
+                    "direction": "horizontal",
+                    "position": 0.5,
+                    "spacing": 0.01
+                }
+            ]
+        }
+    ]
+}
