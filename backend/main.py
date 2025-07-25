@@ -14,7 +14,9 @@ from api.admin import router as admin_router
 from api.employee import router as employee_router
 
 from core.tracker import FaceTrackingSystem
+from core.camera_manager import get_camera_manager, shutdown_camera_manager
 from dependencies import app_state
+from db.db_utils import initialize_connection_pool
 
 # Create the FastAPI app instance
 app = FastAPI(
@@ -36,11 +38,18 @@ app.add_middleware(
 async def startup_event():
     """
     This function runs once when the FastAPI application starts.
-    It loads the config and initializes the FaceTrackingSystem.
+    It loads the config and initializes the FaceTrackingSystem and CameraManager.
     The system does NOT start tracking automatically anymore.
     """
     print("--- Server is starting up ---")
     try:
+        print("Initializing database connection pool...")
+        initialize_connection_pool(min_connections=5, max_connections=20)
+        
+        print("Initializing Camera Manager...")
+        camera_manager = get_camera_manager()
+        app_state["camera_manager"] = camera_manager
+        
         print("Loading API configuration from config.json...")
         with open("config.json", "r") as f:
             config = json.load(f)
@@ -58,6 +67,7 @@ async def startup_event():
         # It must be started via the /superadmin/tracker/start endpoint.
         print("--- Startup complete. Server is ready. ---")
         print("[INFO] Face Tracking Service is initialized but NOT running. Start it via the API.")
+        print("[INFO] Camera Manager is available for independent camera streaming.")
 
     except FileNotFoundError:
         print("FATAL ERROR: config.json not found. The server cannot start.")
@@ -71,11 +81,15 @@ async def startup_event():
 async def shutdown_event():
     """
     This function runs once when the FastAPI application shuts down.
-    It gracefully stops the FaceTrackingSystem.
+    It gracefully stops the FaceTrackingSystem and CameraManager.
     """
     print("--- Server is shutting down ---")
     if "tracker" in app_state:
         app_state["tracker"].shutdown()
+    
+    print("Shutting down Camera Manager...")
+    shutdown_camera_manager()
+    
     print("--- Shutdown complete ---")
 
 # Include all the application routers

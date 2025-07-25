@@ -195,7 +195,7 @@ Tailwind CSS is configured in `tailwind.config.js`:
 
 ## 🔒 Security Features
 
-- JWT token storage and management
+- httpOnly cookie-based authentication management
 - Automatic token refresh handling
 - Role-based route protection
 - Secure API request handling
@@ -302,7 +302,7 @@ This project is part of the Face Recognition System and follows the same licensi
 - Use browser developer tools for debugging
 - Check network tab for API request/response details
 - Monitor console for JavaScript errors
-- Verify JWT token in localStorage
+- Verify authentication cookies are set
 
 ---
 

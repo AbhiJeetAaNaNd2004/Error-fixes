@@ -120,13 +120,34 @@ async def login_for_access_token(response: Response, form_data: OAuth2PasswordRe
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data={"sub": form_data.username, "role": role}, expires_delta=access_token_expires)
-    response.set_cookie(key="access_token", value=access_token, httponly=True, samesite="lax", secure=True, max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60)
+    
+    # FIXED: Make secure cookie conditional based on environment
+    # In development (localhost), secure=False; in production, secure=True
+    import os
+    is_production = os.getenv("ENVIRONMENT", "development").lower() == "production"
+    
+    response.set_cookie(
+        key="access_token", 
+        value=access_token, 
+        httponly=True, 
+        samesite="lax", 
+        secure=is_production,  # Only secure in production
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
+    )
     return {"status": "success", "role": role}
 
 @router.post("/logout")
 async def logout(response: Response):
-    # ... (function content is unchanged)
-    response.delete_cookie("access_token")
+    # FIXED: Use consistent cookie settings for logout
+    import os
+    is_production = os.getenv("ENVIRONMENT", "development").lower() == "production"
+    
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        samesite="lax",
+        secure=is_production  # Match login settings
+    )
     return {"status": "success", "message": "Logged out"}
 
 @router.get("/me", response_model=User)

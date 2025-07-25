@@ -1,4 +1,23 @@
-const API_BASE_URL = 'http://localhost:8000';
+// Dynamic API URL construction for deployment compatibility
+const getApiBaseUrl = () => {
+  // In development, use localhost
+  if (process.env.NODE_ENV === 'development') {
+    return 'http://localhost:8000';
+  }
+  
+  // In production, use the current domain with port 8000
+  // Or use environment variable if provided
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
+  }
+  
+  // Default to same host with port 8000
+  const protocol = window.location.protocol;
+  const hostname = window.location.hostname;
+  return `${protocol}//${hostname}:8000`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 class ApiService {
   constructor() {
@@ -298,11 +317,64 @@ class ApiService {
     });
   }
 
-  // Multi-camera WebSocket helper - Updated for cookie-based auth
-  createVideoWebSocket(cameraId) {
+  // Multi-camera WebSocket helper - Updated for cookie-based auth with dynamic URLs
+  createVideoWebSocket(cameraId, showTripwires = false, showBboxes = true) {
     // Cookies are automatically sent with WebSocket connections to the same domain
-    const wsUrl = `ws://localhost:8000/ws/video_feed/${cameraId}`;
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const hostname = process.env.NODE_ENV === 'development' ? 'localhost' : window.location.hostname;
+    const port = process.env.REACT_APP_WS_PORT || '8000';
+    
+    // Build query parameters for toggles
+    const params = new URLSearchParams();
+    if (showTripwires) params.append('show_tripwires', 'true');
+    if (!showBboxes) params.append('show_bboxes', 'false');
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    
+    const wsUrl = `${wsProtocol}//${hostname}:${port}/ws/video_feed/${cameraId}${queryString}`;
     return new WebSocket(wsUrl);
+  }
+
+  // NEW: Create raw camera WebSocket (without face tracking)
+  createRawCameraWebSocket(cameraId) {
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const hostname = process.env.NODE_ENV === 'development' ? 'localhost' : window.location.hostname;
+    const port = process.env.REACT_APP_WS_PORT || '8000';
+    
+    const wsUrl = `${wsProtocol}//${hostname}:${port}/ws/raw_camera_feed/${cameraId}`;
+    return new WebSocket(wsUrl);
+  }
+
+  // Camera management endpoints
+  async getCameraStatus(cameraId) {
+    return this.authenticatedRequest(`/cameras/${cameraId}/status`);
+  }
+
+  async getAllCamerasStatus() {
+    return this.authenticatedRequest('/cameras/status');
+  }
+
+  async startCamera(cameraId) {
+    return this.authenticatedRequest(`/cameras/${cameraId}/start`, {
+      method: 'POST'
+    });
+  }
+
+  async stopCamera(cameraId) {
+    return this.authenticatedRequest(`/cameras/${cameraId}/stop`, {
+      method: 'POST'
+    });
+  }
+
+  async startAllCameras() {
+    return this.authenticatedRequest('/cameras/start_all', {
+      method: 'POST'
+    });
+  }
+
+  async stopAllCameras() {
+    return this.authenticatedRequest('/cameras/stop_all', {
+      method: 'POST'
+    });
   }
 
   // Batch operations for multi-camera support

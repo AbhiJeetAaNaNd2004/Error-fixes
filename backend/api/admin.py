@@ -6,6 +6,7 @@ import bcrypt
 import cv2
 import numpy as np
 import base64
+from pydantic import BaseModel
 
 from db import db_utils
 from api.auth import require_role
@@ -19,6 +20,11 @@ router = APIRouter(
     # Both 'admin' and 'super_admin' can access these endpoints.
     dependencies=[Depends(require_role(["admin", "super_admin"]))]
 )
+
+# NEW: Schema for user department assignment
+class UserDepartmentAssignment(BaseModel):
+    user_id: int
+    department_id: int
 
 def get_face_enroller():
     """Dependency to get the face enroller from the app state."""
@@ -131,6 +137,19 @@ def delete_face_embedding(embedding_id: int):
     
     # Return a success response with a 200 OK status and a JSON body
     return {"message": "Embedding deleted successfully."}
+
+# NEW: Endpoint for assigning user to department
+@router.put("/users/department", summary="Assign user to department")
+def assign_user_department(assignment: UserDepartmentAssignment):
+    """
+    Assigns a user to a specific department.
+    Accessible by admins and super admins.
+    """
+    try:
+        db_utils.update_user_department(assignment.user_id, assignment.department_id)
+        return {"message": f"User {assignment.user_id} successfully assigned to department {assignment.department_id}"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to assign user to department: {str(e)}")
 
 # In api/admin.py
 from schemas.employee import AttendanceRecord # You may need to create/adjust this schema

@@ -38,12 +38,6 @@ CREATE_TABLE_STATEMENTS = [
     );
     """,
     """
-    CREATE TABLE IF NOT EXISTS departments (
-        id SERIAL PRIMARY KEY,
-        department_name VARCHAR(100) UNIQUE NOT NULL
-    );
-    """,
-    """
     CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         employee_id VARCHAR(50) UNIQUE NOT NULL,
@@ -52,7 +46,6 @@ CREATE_TABLE_STATEMENTS = [
         hashed_password VARCHAR(255) NOT NULL,
         role_id INTEGER REFERENCES roles(id),
         department_id INTEGER REFERENCES departments(id),
-        department_id INTEGER REFERENCES departments(id), 
         enrollment_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         is_active BOOLEAN NOT NULL DEFAULT true
     );
